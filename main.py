@@ -148,7 +148,7 @@ async def _(event: Event):
         else:
             return {'reply': random.choice(CORPUS)}
 
-    log.debug(f'{event.sender["card"]} == 检测卖弱 {config.repeat_prob}')
+    log.debug(f'{event.sender["card"]} == 随机复读 {config.repeat_prob}')
     if random.random() < config.repeat_prob:
         sleep(random.random() * config.repeat_delay)
         return {'reply': event.raw_message}
