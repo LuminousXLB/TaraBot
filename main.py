@@ -128,12 +128,14 @@ async def _(event: Event):
             elif msg == 'all':
                 return {'reply': '\n'.join(QUESTIONS)}
 
+    r = random.random()
+
     if config is None:
         if datetime.now().hour < 8:
-            log.debug(f'NIGHT {event.sender["card"]} -> {event.raw_message}')
+            log.debug(f'NIGHT {r} {event.sender["card"]} -> {event.raw_message}')
             config = daylight_config
         else:
-            log.debug(f'DAY   {event.sender["card"]} -> {event.raw_message}')
+            log.debug(f'DAY   {r} {event.sender["card"]} -> {event.raw_message}')
             config = night_config
 
     if '[CQ:video' in event.raw_message:
@@ -142,15 +144,15 @@ async def _(event: Event):
     (match_choice, score) = process.extractOne(event.raw_message, TRIGGER + CORPUS)
     log.debug(f'{event.sender["card"]} == 检测卖弱 {config.weak_prob}')
     log.info(','.join([str(x) for x in [event.raw_message, match_choice, score]]))
-    if score > 50 and random.random() < config.weak_prob:
+    if score > 50 and r < config.weak_prob:
         sleep(random.random() * config.weak_delay)
-        if random.random() < config.battle_prob:
+        if r < config.battle_prob:
             return {'reply': random.choice(TRIGGER) + f' [CQ:at,qq={CHI_BOT}]'}
         else:
             return {'reply': random.choice(CORPUS)}
 
     log.debug(f'{event.sender["card"]} == 随机复读 {config.repeat_prob}')
-    if random.random() < config.repeat_prob:
+    if r < config.repeat_prob:
         sleep(random.random() * config.repeat_delay)
         return {'reply': event.raw_message}
 
