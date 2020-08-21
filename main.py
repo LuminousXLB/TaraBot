@@ -44,7 +44,7 @@ def load_corpus():
 
 def load_faq():
     global FAQ, QUESTIONS
-    FAQ: dict = json.loads(Path('faq.json').read_text(encoding='utf-8'))
+    FAQ = json.loads(Path('faq.json').read_text(encoding='utf-8'))
     QUESTIONS = list(FAQ.keys())
 
 
