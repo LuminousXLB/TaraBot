@@ -5,7 +5,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 from sys import stdout
-from time import time_ns, sleep
+from time import time, sleep
 from typing import List
 
 from aiocqhttp import CQHttp, Event
@@ -113,10 +113,10 @@ async def _(event: Event):
             msg: str = message['data']['text'].strip()
 
             if msg.startswith('问'):
-                start = time_ns()
+                start = time()
                 question = COMMAND_REGEX.search(msg).groups()[0]
                 (match_choice, score) = process.extractOne(question, QUESTIONS)
-                end = time_ns()
+                end = time()
                 log.info(','.join([str(x) for x in [question, match_choice, score, end - start]]))
                 if score < 20:
                     return {'reply': random.choice(REFUSE + ['无可奉告'])}
