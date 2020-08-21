@@ -141,6 +141,7 @@ async def _(event: Event):
 
     (match_choice, score) = process.extractOne(event.raw_message, TRIGGER + CORPUS)
     log.debug(f'{event.sender["card"]} == 检测卖弱 {config.weak_prob}')
+    log.info(','.join([str(x) for x in [event.raw_message, match_choice, score]]))
     if score > 80 and random.random() < config.weak_prob:
         sleep(random.random() * config.weak_delay)
         if random.random() < config.battle_prob:
