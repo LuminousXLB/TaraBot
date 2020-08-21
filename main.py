@@ -74,11 +74,11 @@ class Config:
 
 
 active_config = Config(
-    repeat_prob=0.4,
+    repeat_prob=0.8,
     repeat_delay=0.5,
-    weak_prob=0.8,
+    weak_prob=1,
     weak_delay=0.5,
-    battle_prob=0.2,
+    battle_prob=0.4,
     recall_react_delay=0.5
 )
 
