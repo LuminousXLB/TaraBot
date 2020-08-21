@@ -139,8 +139,8 @@ async def _(event: Event):
     if '[CQ:video' in event.raw_message:
         return {'reply': random.choice(CORPUS)}
 
-    log.debug(f'AT    {event.sender["card"]} == 检测卖弱')
     (match_choice, score) = process.extractOne(event.raw_message, TRIGGER + CORPUS)
+    log.debug(f'{event.sender["card"]} == 检测卖弱 {config.weak_prob}')
     if score > 80 and random.random() < config.weak_prob:
         sleep(random.random() * config.weak_delay)
         if random.random() < config.battle_prob:
@@ -148,7 +148,7 @@ async def _(event: Event):
         else:
             return {'reply': random.choice(CORPUS)}
 
-    log.debug(f'AT    {event.sender["card"]} == 随机卖弱')
+    log.debug(f'{event.sender["card"]} == 检测卖弱 {config.repeat_prob}')
     if random.random() < config.repeat_prob:
         sleep(random.random() * config.repeat_delay)
         return {'reply': event.raw_message}
