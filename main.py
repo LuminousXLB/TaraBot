@@ -108,7 +108,7 @@ async def _(event: Event):
     config = None
 
     if f'[CQ:at,qq={event.self_id}]' in event.raw_message:
-        log.debug(f'AT {event.sender} -> {event.raw_message}')
+        log.debug(f'AT    {event.sender["card_id"]} -> {event.raw_message}')
         config = active_config
         for message in filter(lambda m: m['type'] == 'text', event.message):
             msg: str = message['data']['text'].strip()
@@ -130,10 +130,10 @@ async def _(event: Event):
 
     if config is None:
         if datetime.now().hour < 8:
-            log.debug(f'DAY {event.sender} -> {event.raw_message}')
+            log.debug(f'DAY   {event.sender["card_id"]} -> {event.raw_message}')
             config = night_config
         else:
-            log.debug(f'NIGHT {event.sender} -> {event.raw_message}')
+            log.debug(f'NIGHT {event.sender["card_id"]} -> {event.raw_message}')
             config = daylight_config
 
     if '[CQ:video' in event.raw_message:
