@@ -2,7 +2,6 @@ import json
 import logging
 import random
 import re
-from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from sys import stdout
@@ -51,7 +50,6 @@ def load_faq():
 COMMAND_REGEX = re.compile(r'问\s*(\S+)')
 
 
-@dataclass
 class Config:
     repeat_prob: float
     repeat_delay: float
@@ -59,6 +57,20 @@ class Config:
     weak_delay: float
     battle_prob: float
     recall_react_delay: float
+
+    def __init__(self,
+                 repeat_prob: float,
+                 repeat_delay: float,
+                 weak_prob: float,
+                 weak_delay: float,
+                 battle_prob: float,
+                 recall_react_delay: float):
+        self.repeat_prob = repeat_prob
+        self.repeat_delay = repeat_delay
+        self.weak_prob = weak_prob
+        self.weak_delay = weak_delay
+        self.battle_prob = battle_prob
+        self.recall_react_delay = recall_react_delay
 
 
 active_config = Config(
@@ -145,4 +157,4 @@ async def recall(event: Event):
 if __name__ == '__main__':
     load_faq()
     load_corpus()
-    bot.run(host='0.0.0.0', port=8765)
+    bot.run(host='localhost', port=8765)
