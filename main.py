@@ -133,10 +133,10 @@ async def _(event: Event):
     if config is None:
         if datetime.now().hour < 8:
             log.debug(f'NIGHT {r} {event.sender["card"]} -> {event.raw_message}')
-            config = daylight_config
+            config = night_config
         else:
             log.debug(f'DAY   {r} {event.sender["card"]} -> {event.raw_message}')
-            config = night_config
+            config = daylight_config
 
     if '[CQ:video' in event.raw_message:
         return {'reply': random.choice(CORPUS)}
