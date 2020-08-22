@@ -117,7 +117,7 @@ async def _(event: Event):
     if at(event.self_id) in event.raw_message:
         config = active_config
 
-        if at(IDIOT) in event.raw_message and '吗' in event.raw_message:
+        if at(IDIOT) in event.raw_message and '骂' in event.raw_message:
             return {'reply': f'{at(IDIOT)} 骂 {at(event.user_id)}'}
 
         for message in filter(lambda m: m['type'] == 'text', event.message):
