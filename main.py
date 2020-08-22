@@ -115,8 +115,13 @@ async def _(event: Event):
     config = None
 
     if at(IDIOT) in event.raw_message:
-        if '骂' in event.raw_message and at(event.self_id) in event.raw_message:
-            return {'reply': f'{at(IDIOT)} 骂 {at(event.user_id)}'}
+        if at(event.self_id) in event.raw_message:
+            if '骂' in event.raw_message:
+                return {'reply': f'{at(IDIOT)} 骂 {at(event.user_id)}'}
+            if '夸' in event.raw_message:
+                return answer_weakness()
+            else:
+                return None
         else:
             return None
 
