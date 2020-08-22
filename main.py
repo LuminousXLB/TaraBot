@@ -1,4 +1,3 @@
-import json
 import logging
 import random
 import re
@@ -25,7 +24,6 @@ file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(logging.Formatter('%(asctime)s, %(levelname)s, %(name)s, %(message)s'))
 log.addHandler(file_handler)
 
-FAQ: dict = {}
 QUESTIONS: List[str] = []
 
 CHI_BOT = 1486024403
@@ -127,10 +125,12 @@ async def _(event: Event):
                 if score < 50:
                     return {'reply': f'你要问的是不是 {match_choice}'}
                 else:
-                    return {'reply': f'{match_choice}：\n{FAQ[match_choice]}'}
+                    return {'reply': f'[CQ:at,qq={CHI_BOT}] 问 {match_choice}'}
+
             if msg.startswith('我') and msg.endswith('吗'):
                 return answer_book()
-            elif msg == 'all':
+
+            if msg == 'all':
                 return {'reply': '\n'.join(QUESTIONS)}
 
     r = random.random()
@@ -176,13 +176,12 @@ def load_corpus():
     BOOK = Path('answers.txt').read_text('utf-8').splitlines()
 
 
-def load_faq():
-    global FAQ, QUESTIONS
-    FAQ = json.loads(Path('faq.json').read_text(encoding='utf-8'))
-    QUESTIONS = list(FAQ.keys())
+def load_faq_questions():
+    global QUESTIONS
+    QUESTIONS = Path('questions.txt').read_text('utf-8').splitlines()
 
 
 if __name__ == '__main__':
-    load_faq()
+    load_faq_questions()
     load_corpus()
     bot.run(host='localhost', port=8765)
