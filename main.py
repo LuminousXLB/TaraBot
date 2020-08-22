@@ -89,7 +89,7 @@ bot = CQHttp()
 
 
 def answer_book(event: Event):
-    return {'reply': f'{at(event.user_id)} {random.choice(BOOK)}'}
+    return {'reply': f'{random.choice(BOOK)} {at(event.user_id)}'}
 
 
 def answer_weakness():
