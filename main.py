@@ -80,11 +80,11 @@ night_config = Config(
 )
 
 daylight_config = Config(
-    repeat_prob=0.05,
+    repeat_prob=0.04,
     repeat_delay=2,
-    weak_prob=0.06,
+    weak_prob=0.02,
     weak_delay=4,
-    battle_prob=0.03,
+    battle_prob=0.01,
     recall_react_delay=1
 )
 
