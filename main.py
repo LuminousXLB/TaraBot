@@ -4,6 +4,7 @@ import random
 import re
 from datetime import datetime
 from pathlib import Path
+from string import punctuation, whitespace
 from sys import stdout
 from time import time, sleep
 from typing import List
@@ -112,7 +113,7 @@ async def _(event: Event):
     if f'[CQ:at,qq={event.self_id}]' in event.raw_message:
         config = active_config
         for message in filter(lambda m: m['type'] == 'text', event.message):
-            msg: str = message['data']['text'].strip('?？')
+            msg: str = message['data']['text'].strip(punctuation + whitespace + '?？')
             log.debug(f'AT    {event.sender["card"]} -> {msg}')
 
             if msg.startswith('问'):
