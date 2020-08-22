@@ -27,6 +27,8 @@ log.addHandler(file_handler)
 QUESTIONS: List[str] = []
 
 CHI_BOT = 1486024403
+IDIOT = 2780065314
+
 CORPUS: List[str] = []
 TRIGGER: List[str] = []
 REFUSE: List[str] = []
@@ -114,6 +116,10 @@ async def _(event: Event):
 
     if at(event.self_id) in event.raw_message:
         config = active_config
+
+        if at(IDIOT) in event.raw_message and '吗' in event.raw_message:
+            return {'reply': f'{at(IDIOT)} 骂 {at(event.user_id)}'}
+
         for message in filter(lambda m: m['type'] == 'text', event.message):
             msg: str = message['data']['text'].strip(punctuation + whitespace + '?？')
             log.debug(f'AT    {event.sender["card"]} -> {msg}')
