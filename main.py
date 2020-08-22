@@ -168,7 +168,7 @@ async def recall(event: Event):
 
 
 def load_corpus():
-    global CORPUS, TRIGGER, REFUSE
+    global CORPUS, TRIGGER, REFUSE, BOOK
     CORPUS = Path('Chi-Corpus/common.txt').read_text('utf-8').splitlines()
     CORPUS = list(filter(lambda c: '?' not in c, CORPUS))
     TRIGGER = Path('Chi-Corpus/trigger.txt').read_text('utf-8').splitlines()
