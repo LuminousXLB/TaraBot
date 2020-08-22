@@ -215,7 +215,7 @@ def load_corpus():
 
 def load_faq_questions():
     global QUESTIONS
-    QUESTIONS = json.load(Path('questions.json').read_text('utf-8'))
+    QUESTIONS = json.loads(Path('questions.json').read_text('utf-8'))
 
 
 if __name__ == '__main__':
