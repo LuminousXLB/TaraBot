@@ -114,11 +114,17 @@ def at(qq):
 async def _(event: Event):
     config = None
 
+    if at(IDIOT) in event.raw_message:
+        if '骂' in event.raw_message and at(event.self_id) in event.raw_message:
+            return {'reply': f'{at(IDIOT)} 骂 {at(event.user_id)}'}
+        else:
+            return None
+
     if at(event.self_id) in event.raw_message:
         config = active_config
 
-        if at(IDIOT) in event.raw_message and '骂' in event.raw_message:
-            return {'reply': f'{at(IDIOT)} 骂 {at(event.user_id)}'}
+        if event.user_id == IDIOT:
+            return answer_book(event)
 
         for message in filter(lambda m: m['type'] == 'text', event.message):
             msg: str = message['data']['text'].strip(punctuation + whitespace + '?？')
@@ -142,9 +148,6 @@ async def _(event: Event):
 
             if msg == 'all':
                 return {'reply': '\n'.join(QUESTIONS)}
-
-    if event.user_id == IDIOT:
-        return answer_book(event)
 
     r = random.random()
 
