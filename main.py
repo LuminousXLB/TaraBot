@@ -132,7 +132,7 @@ async def _(event: Event):
                     return {'reply': f'{at(CHI_BOT)} 问 {match_choice}'}
 
             if msg.startswith('我') and msg.endswith('吗'):
-                return answer_book()
+                return answer_book(event)
 
             if msg == 'all':
                 return {'reply': '\n'.join(QUESTIONS)}
