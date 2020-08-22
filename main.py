@@ -31,21 +31,7 @@ CHI_BOT = 1486024403
 CORPUS: List[str] = []
 TRIGGER: List[str] = []
 REFUSE: List[str] = []
-
-
-def load_corpus():
-    global CORPUS, TRIGGER, REFUSE
-    CORPUS = Path('Chi-Corpus/common.txt').read_text('utf-8').splitlines()
-    CORPUS = list(filter(lambda c: '?' not in c, CORPUS))
-    TRIGGER = Path('Chi-Corpus/trigger.txt').read_text('utf-8').splitlines()
-    REFUSE = Path('Chi-Corpus/refuse.txt').read_text('utf-8').splitlines()
-
-
-def load_faq():
-    global FAQ, QUESTIONS
-    FAQ = json.loads(Path('faq.json').read_text(encoding='utf-8'))
-    QUESTIONS = list(FAQ.keys())
-
+BOOK: List[str] = []
 
 COMMAND_REGEX = re.compile(r'问\s*(\S+)')
 
@@ -103,15 +89,31 @@ daylight_config = Config(
 bot = CQHttp()
 
 
+def answer_book():
+    return {'reply': random.choice(BOOK)}
+
+
+def answer_weakness():
+    return {'reply': random.choice(CORPUS)}
+
+
+def answer_battle():
+    return {'reply': random.choice(TRIGGER) + f' [CQ:at,qq={CHI_BOT}]'}
+
+
+def answer_repeat(event):
+    return {'reply': event.raw_message}
+
+
 @bot.on_message('group')
 async def _(event: Event):
     config = None
 
     if f'[CQ:at,qq={event.self_id}]' in event.raw_message:
-        log.debug(f'AT    {event.sender["card"]} -> {event.raw_message}')
         config = active_config
         for message in filter(lambda m: m['type'] == 'text', event.message):
-            msg: str = message['data']['text'].strip()
+            msg: str = message['data']['text'].strip('?？')
+            log.debug(f'AT    {event.sender["card"]} -> {msg}')
 
             if msg.startswith('问'):
                 start = time()
@@ -125,6 +127,8 @@ async def _(event: Event):
                     return {'reply': f'你要问的是不是 {match_choice}'}
                 else:
                     return {'reply': f'{match_choice}：\n{FAQ[match_choice]}'}
+            if msg.startswith('我') and msg.endswith('吗'):
+                return answer_book()
             elif msg == 'all':
                 return {'reply': '\n'.join(QUESTIONS)}
 
@@ -139,7 +143,7 @@ async def _(event: Event):
             config = daylight_config
 
     if '[CQ:video' in event.raw_message:
-        return {'reply': random.choice(CORPUS)}
+        return answer_weakness()
 
     (match_choice, score) = process.extractOne(event.raw_message, TRIGGER + CORPUS)
     log.debug(f'{event.sender["card"]} == 检测卖弱 {config.weak_prob}')
@@ -149,17 +153,32 @@ async def _(event: Event):
         if r < config.battle_prob:
             return {'reply': random.choice(TRIGGER) + f' [CQ:at,qq={CHI_BOT}]'}
         else:
-            return {'reply': random.choice(CORPUS)}
+            return answer_weakness()
 
     log.debug(f'{event.sender["card"]} == 随机复读 {config.repeat_prob}')
     if r < config.repeat_prob:
         sleep(random.random() * config.repeat_delay)
-        return {'reply': event.raw_message}
+        return answer_repeat(event)
 
 
 @bot.on_notice('group_recall')
 async def recall(event: Event):
-    return {'reply': random.choice(CORPUS)}
+    return answer_weakness()
+
+
+def load_corpus():
+    global CORPUS, TRIGGER, REFUSE
+    CORPUS = Path('Chi-Corpus/common.txt').read_text('utf-8').splitlines()
+    CORPUS = list(filter(lambda c: '?' not in c, CORPUS))
+    TRIGGER = Path('Chi-Corpus/trigger.txt').read_text('utf-8').splitlines()
+    REFUSE = Path('Chi-Corpus/refuse.txt').read_text('utf-8').splitlines()
+    BOOK = Path('answers.txt').read_text('utf-8').splitlines()
+
+
+def load_faq():
+    global FAQ, QUESTIONS
+    FAQ = json.loads(Path('faq.json').read_text(encoding='utf-8'))
+    QUESTIONS = list(FAQ.keys())
 
 
 if __name__ == '__main__':
