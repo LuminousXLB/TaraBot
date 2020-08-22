@@ -110,8 +110,12 @@ def at(qq):
     return f'[CQ:at,qq={qq}]'
 
 
+NEXT = None
+
+
 @bot.on_message('group')
 async def _(event: Event):
+    global NEXT
     config = None
 
     if at(IDIOT) in event.raw_message:
@@ -119,7 +123,11 @@ async def _(event: Event):
             if '骂' in event.raw_message:
                 return {'reply': f'{at(IDIOT)} 骂 {at(event.user_id)}'}
             if '夸' in event.raw_message:
-                return answer_weakness()
+                NEXT = 'answer_weakness'
+                return None
+            if '表白' in event.raw_message:
+                NEXT = 'answer_book'
+                return None
             else:
                 return None
         else:
@@ -129,7 +137,14 @@ async def _(event: Event):
         config = active_config
 
         if event.user_id == IDIOT:
-            return answer_book(event)
+            if NEXT == 'answer_weakness':
+                NEXT = None
+                return answer_weakness()
+            elif NEXT == 'answer_book':
+                NEXT = None
+                return answer_book(event)
+            else:
+                return None
 
         for message in filter(lambda m: m['type'] == 'text', event.message):
             msg: str = message['data']['text'].strip(punctuation + whitespace + '?？')
