@@ -1,3 +1,4 @@
+import json
 import logging
 import random
 import re
@@ -24,7 +25,7 @@ file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(logging.Formatter('%(asctime)s, %(levelname)s, %(name)s, %(message)s'))
 log.addHandler(file_handler)
 
-QUESTIONS: List[str] = []
+QUESTIONS: dict = {}
 
 CHI_BOT = 1486024403
 IDIOT = 2780065314
@@ -153,15 +154,15 @@ async def _(event: Event):
             if msg.startswith('问'):
                 start = time()
                 question = COMMAND_REGEX.search(msg).groups()[0]
-                (match_choice, score) = process.extractOne(question, QUESTIONS)
+                (match_choice, score) = process.extractOne(question, QUESTIONS.keys())
                 end = time()
                 log.info(','.join([str(x) for x in [question, match_choice, score, end - start]]))
                 if score < 20:
                     return {'reply': random.choice(REFUSE + ['无可奉告'])}
                 if score < 50:
-                    return {'reply': f'你要问的是不是 {match_choice}'}
+                    return {'reply': f'你要问的是不是 {QUESTIONS[match_choice]}'}
                 else:
-                    return {'reply': f'{at(CHI_BOT)} 问 {match_choice}'}
+                    return {'reply': f'{at(CHI_BOT)} 问 {QUESTIONS[match_choice]}'}
 
             if msg.startswith('我') and msg.endswith('吗'):
                 return answer_book(event)
@@ -214,7 +215,7 @@ def load_corpus():
 
 def load_faq_questions():
     global QUESTIONS
-    QUESTIONS = Path('questions.txt').read_text('utf-8').splitlines()
+    QUESTIONS = json.load(Path('questions.json').read_text('utf-8'))
 
 
 if __name__ == '__main__':
