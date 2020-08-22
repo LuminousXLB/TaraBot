@@ -143,6 +143,9 @@ async def _(event: Event):
             if msg == 'all':
                 return {'reply': '\n'.join(QUESTIONS)}
 
+    if event.user_id == IDIOT:
+        return answer_book(event)
+
     r = random.random()
 
     if config is None:
