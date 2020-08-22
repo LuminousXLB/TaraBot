@@ -88,8 +88,8 @@ daylight_config = Config(
 bot = CQHttp()
 
 
-def answer_book():
-    return {'reply': random.choice(BOOK)}
+def answer_book(event: Event):
+    return {'reply': f'{at(event.user_id)} {random.choice(BOOK)}'}
 
 
 def answer_weakness():
@@ -100,15 +100,19 @@ def answer_battle():
     return {'reply': random.choice(TRIGGER) + f' [CQ:at,qq={CHI_BOT}]'}
 
 
-def answer_repeat(event):
-    return {'reply': event.raw_message}
+def answer_repeat(event: Event):
+    return {'reply': event.raw_message.replace(at(event.self_id), '')}
+
+
+def at(qq):
+    return f'[CQ:at,qq={qq}]'
 
 
 @bot.on_message('group')
 async def _(event: Event):
     config = None
 
-    if f'[CQ:at,qq={event.self_id}]' in event.raw_message:
+    if at(event.self_id) in event.raw_message:
         config = active_config
         for message in filter(lambda m: m['type'] == 'text', event.message):
             msg: str = message['data']['text'].strip(punctuation + whitespace + '?？')
@@ -125,7 +129,7 @@ async def _(event: Event):
                 if score < 50:
                     return {'reply': f'你要问的是不是 {match_choice}'}
                 else:
-                    return {'reply': f'[CQ:at,qq={CHI_BOT}] 问 {match_choice}'}
+                    return {'reply': f'{at(CHI_BOT)} 问 {match_choice}'}
 
             if msg.startswith('我') and msg.endswith('吗'):
                 return answer_book()
@@ -152,7 +156,7 @@ async def _(event: Event):
     if score > 50 and r < config.weak_prob:
         sleep(random.random() * config.weak_delay)
         if r < config.battle_prob:
-            return {'reply': random.choice(TRIGGER) + f' [CQ:at,qq={CHI_BOT}]'}
+            return {'reply': f'{random.choice(TRIGGER)} {at(CHI_BOT)}'}
         else:
             return answer_weakness()
 
