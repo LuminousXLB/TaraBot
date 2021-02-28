@@ -6,8 +6,12 @@ services:
     image: tarabot/go-cqhttp
     volumes:
       - "./go-cqhttp-data:/data"
+    environment:
+      - TZ=Asia/Shanghai
     networks:
       - internal_net
+    expose:
+      - 5700
     ports:
       - 9999:9999
     depends_on:
@@ -16,10 +20,12 @@ services:
   tarabot:
     build: ./tarabot
     image: tarabot/tarabot
-    expose:
-      - 8080
+    environment:
+      - TZ=Asia/Shanghai
     networks:
       - internal_net
+    expose:
+      - 8080
     volumes:
       - "./tarabot:/root/tarabot"
 
