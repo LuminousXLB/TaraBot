@@ -1,4 +1,10 @@
+key
+go-cqhttp
+go-cqhttp-data
+!go-cqhttp-data/.gitkeep
+
 .idea
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

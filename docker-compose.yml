@@ -1,0 +1,27 @@
+version: "3"
+services:
+
+  go-cqhttp:
+    build: ./go-cqhttp
+    image: tarabot/go-cqhttp
+    volumes:
+      - "./go-cqhttp-data:/data"
+    networks:
+      - internal_net
+    ports:
+      - 9999:9999
+    depends_on:
+      - tarabot
+
+  tarabot:
+    build: ./tarabot
+    image: tarabot/tarabot
+    expose:
+      - "8080"
+    networks:
+      - internal_net
+    volumes:
+      - "./tarabot:/root/tarabot"
+
+networks:
+  internal_net:
